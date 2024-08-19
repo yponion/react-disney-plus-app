@@ -1,12 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+} from "firebase/auth";
 
 const Nav = () => {
   const [show, setShow] = useState(false);
   const { pathname } = useLocation();
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
+  const auth = getAuth();
+  const provider = new GoogleAuthProvider();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log(user);
+      if (user) {
+        if (pathname === "/") navigate("/main");
+      } else {
+        navigate("/");
+      }
+    });
+  }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -28,6 +47,12 @@ const Nav = () => {
     navigate(`/search?q=${e.target.value}`);
   };
 
+  const handleAuth = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {})
+      .catch((error) => {});
+  };
+
   return (
     <NavWrapper $show={show}>
       <Logo>
@@ -38,7 +63,7 @@ const Nav = () => {
         />
       </Logo>
       {pathname === "/" ? (
-        <Login>Login</Login>
+        <Login onClick={handleAuth}>Login</Login>
       ) : (
         <Input
           value={searchValue}
@@ -55,14 +80,14 @@ const Nav = () => {
 export default Nav;
 
 const Login = styled.a`
-  background-color:rgba(0,0,0,0.6);
-  padding:8px 16px;
-  tect-transform: uppercase;
-  letter-spacing:1.5px
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 8px 16px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   border: 1px solid #f9f9f9;
   transition: all 0.2s ease 0s;
 
-  &:hover{
+  &:hover {
     background-color: #f9f9f9;
     color: gray;
     border-color: transparent;
