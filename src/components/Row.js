@@ -76,7 +76,7 @@ const Row = ({ title, id, fetchUrl }) => {
             <SwiperSlide key={movie.id}>
               <Wrap>
                 <img
-                  src={`https://image.tmdb.org//t/p/original/${movie.backdrop_path}`}
+                  src={`https://image.tmdb.org//t/p/original${movie.backdrop_path}`}
                   alt={movie.name}
                   onClick={() => handleClick(movie)}
                 />
